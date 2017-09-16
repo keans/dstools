@@ -41,5 +41,8 @@ setup(
     packages=find_packages(
         exclude=['contrib', 'docs', 'tests']
     ),
-    install_requires=["pushnotify", "requests", "ujson", "numpy", "scipy"],
+    install_requires=[
+        "pushnotify", "requests", "ujson", "numpy", 
+        "scipy", "future"
+    ],
 )
