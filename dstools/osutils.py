@@ -168,12 +168,15 @@ def get_lines_count(filename):
     return sum(1 for line in get_linewise(filename))
 
 
-def get_all_files(directory, pattern="*", sort=True):
+def get_all_files(pattern="*", directory=None, sort=True):
     """
     returns a list of all files in the given directory
     that matches the given pattern
     """
-    files = glob.glob(os.path.join(directory, pattern))
+    if directory is not None:
+        pattern = os.path.join(directory, pattern)
+
+    files = glob.glob(pattern)
 
     if sort:
         files.sort()
