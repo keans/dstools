@@ -50,7 +50,8 @@ def add_file_directory_to_path(f, rel_path=".."):
             "be added to the PATH variable. Abort!" % path
         )
 
-    sys.path.append(path)
+    if path not in sys.path:
+        sys.path.append(path)
 
 
 def disk_free(path, relative=True):
@@ -84,9 +85,9 @@ def get_filename_or_error(filename, paths=[]):
     if filename is None:
         sys.exit("No filename provided! Abort.")
 
-    if paths == []:
-        # if no path provided, use current directory
-        paths = ["./"]
+    if "./" not in paths:
+        # always add current directory as path
+        paths.insert(0, "./")
 
     # check provided paths for matching file
     for path in paths:
@@ -105,37 +106,53 @@ def get_filename_or_error(filename, paths=[]):
         )
 
 
-def get_linewise(filename, linewise_json=False):
+def open_read(filename):
+    """
+    open file depending on extension
+    """
+    _, ext = os.path.splitext(filename)
+    if ext == ".gz":
+        # open as gzip
+        return gzip.open(filename, "rb")
+    elif ext == ".bz2":
+        # open as bz2
+        return bz2.BZ2File(filename, "rb")
+    else:
+        # open as normal file
+        return codecs.open(filename, "r", "utf-8")
+
+
+def get_linewise(filename, func=None, skip_comments="#"):
     """
     read given file and return it linewise
+    apply the given func on each line, if provided
+    comments will be skipped
     """
     f = None
     try:
-        if filename.endswith(".gz"):
-            # open as gzip
-            f = gzip.open(filename, "rb")
-            buffered_reader = io.BufferedReader(f)
-        else:
-            # open as normal file
-            f = codecs.open(filename, "r", "utf-8")
+        # open file for reading
+        f = open_read(filename)
+
+        # prepare buffered reader for fast reading
+        if hasattr(f, "read"):
             buffered_reader = io.BufferedReader(io.FileIO(f.fileno()))
+        else:
+            buffered_reader = io.BufferedReader(f)
 
         for line in buffered_reader:
-            if line.startswith("#"):
+            if skip_comments is not None and line.startswith(skip_comments):
                 # skip comments
                 continue
 
-            if linewise_json:
-                # decode linewise json
-                yield json.loads(line)
-
+            if func is not None:
+                yield func(line.strip())
             else:
-                # return stripped vanilla line
                 yield line.strip()
 
     finally:
         # make sure file is closed
-        f.close()
+        if f is not None:
+            f.close()
 
 
 def get_lines_count(filename):
