@@ -5,6 +5,7 @@ import io
 import glob
 import codecs
 import collections
+import bz2
 
 try:
     import ujson as json
