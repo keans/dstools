@@ -123,7 +123,9 @@ def open_read(filename):
         return codecs.open(filename, "r", "utf-8")
 
 
-def get_linewise(filename, func=None, skip_comments="#"):
+def get_linewise(
+    filename, func=None, skip_comments="#", skip_empty_lines=True
+):
     """
     read given file and return it linewise
     apply the given func on each line, if provided
@@ -141,14 +143,17 @@ def get_linewise(filename, func=None, skip_comments="#"):
             buffered_reader = io.BufferedReader(f)
 
         for line in buffered_reader:
-            if skip_comments is not None and line.startswith(skip_comments):
+            line = line.strip()
+
+            if skip_empty_lines and (line == ""):
+                # skip empty lines
+                continue
+
+            if (skip_comments is not None) and line.startswith(skip_comments):
                 # skip comments
                 continue
 
-            if func is not None:
-                yield func(line.strip())
-            else:
-                yield line.strip()
+            yield func(line) if func is not None else line
 
     finally:
         # make sure file is closed
