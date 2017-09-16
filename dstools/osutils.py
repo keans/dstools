@@ -123,6 +123,33 @@ def open_read(filename):
         return codecs.open(filename, "r", "utf-8")
 
 
+def get_blocks(filename, func=None, chunk_size=512):
+    """
+    read given file and return it blockwise
+    (if None, all as one block is read)
+    apply the given func on each block
+    """
+    with open_read(filename) as f:
+        # prepare buffered reader for fast reading
+        if hasattr(f, "read"):
+            buffered_reader = io.BufferedReader(io.FileIO(f.fileno()))
+        else:
+            buffered_reader = io.BufferedReader(f)
+
+        if chunk_size is None:
+            # read complete file at once
+            data = buffered_reader.read()
+            yield func(data) if func is not None else data
+
+        else:
+            # read block wise
+            while True:
+                data = buffered_reader.read(chunk_size)
+                if not data:
+                    break
+                yield func(data) if func is not None else data
+
+
 def get_linewise(
     filename, func=None, skip_comments="#", skip_empty_lines=True
 ):
@@ -131,11 +158,7 @@ def get_linewise(
     apply the given func on each line, if provided
     comments will be skipped
     """
-    f = None
-    try:
-        # open file for reading
-        f = open_read(filename)
-
+    with open_read(filename) as f:
         # prepare buffered reader for fast reading
         if hasattr(f, "read"):
             buffered_reader = io.BufferedReader(io.FileIO(f.fileno()))
@@ -154,11 +177,6 @@ def get_linewise(
                 continue
 
             yield func(line) if func is not None else line
-
-    finally:
-        # make sure file is closed
-        if f is not None:
-            f.close()
 
 
 def get_lines_count(filename):
