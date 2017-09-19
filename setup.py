@@ -16,7 +16,7 @@ def get_long_description():
 
 setup(
     name='dstools',
-    version='0.0.4',
+    version='0.0.5',
     description='Set of tools for reoccurring data science tasks.',
     long_description=get_long_description(),
     url='https://keans.de',
@@ -42,7 +42,7 @@ setup(
         exclude=['contrib', 'docs', 'tests']
     ),
     install_requires=[
-        "pushnotify", "requests", "ujson", "numpy", 
+        "pushnotify", "requests", "ujson", "numpy",
         "scipy", "future"
     ],
 )

@@ -6,6 +6,7 @@ import glob
 import codecs
 import collections
 import bz2
+import shutil
 
 try:
     import ujson as json
@@ -107,6 +108,21 @@ def get_filename_or_error(filename, paths=[]):
         )
 
 
+def gzip_file(filename, keep=False):
+    """
+    reads the content of the given file linewise
+    and stores it as gz file, by default the original
+    file will be deleted, if keep flag is not set to true
+    """
+    with open(filename, "rb") as f_in, \
+            gzip.open("{}.gz".format(filename), "wb") as f_out:
+        shutil.copyfileobj(f_in, f_out)
+
+    if not keep:
+        # remove original file, if flag is set
+        os.remove(filename)
+
+
 def open_read(filename):
     """
     open file depending on extension
@@ -176,7 +192,10 @@ def get_linewise(
                 # skip comments
                 continue
 
-            yield func(line) if func is not None else line
+            try:
+                yield func(line) if func is not None else line
+            except ValueError:
+                print "ERROR", line
 
 
 def get_lines_count(filename):
