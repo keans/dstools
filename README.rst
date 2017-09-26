@@ -13,5 +13,5 @@ The easiest way to install the ``dstools`` module is to use pip.
 
 ::
 
-    pip install https://github.com/keans/dstools/archive/master.zip
+    pip install -U https://github.com/keans/dstools/archive/master.zip
 

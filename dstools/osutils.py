@@ -147,7 +147,7 @@ def get_blocks(filename, func=None, chunk_size=512):
     """
     with open_read(filename) as f:
         # prepare buffered reader for fast reading
-        if not hasattr(f, "read"):
+        if not hasattr(f, "readable"):
             buffered_reader = io.BufferedReader(io.FileIO(f.fileno()))
         else:
             buffered_reader = io.BufferedReader(f)
@@ -176,7 +176,7 @@ def get_linewise(
     """
     with open_read(filename) as f:
         # prepare buffered reader for fast reading
-        if not hasattr(f, "read"):
+        if not hasattr(f, "readable"):
             buffered_reader = io.BufferedReader(io.FileIO(f.fileno()))
         else:
             buffered_reader = io.BufferedReader(f)
