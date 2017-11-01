@@ -30,7 +30,7 @@ def get_dir_or_error(path):
     """
     returns the path or exists with an error, if it is not existing
     """
-    if not os.path.exist(path):
+    if not os.path.exists(path) or not os.path.isdir(path):
         sys.exit("The path '%s' does not exist. Abort!" % path)
 
     return path
