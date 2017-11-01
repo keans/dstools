@@ -195,7 +195,7 @@ def get_linewise(
             try:
                 yield func(line) if func is not None else line
             except ValueError:
-                print "ERROR", line
+                print("ERROR", line)
 
 
 def get_lines_count(filename):
@@ -213,7 +213,7 @@ def get_all_files(pattern="*", directory=None, sort=True):
     if directory is not None:
         pattern = os.path.join(directory, pattern)
 
-    files = glob.glob(pattern)
+    files = glob.glob(os.path.expanduser(pattern))
 
     if sort:
         files.sort()
