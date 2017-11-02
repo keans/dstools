@@ -33,7 +33,7 @@ class DejaVuMultiple:
     def __init__(self):
         self._unique_items = collections.defaultdict(set)
 
-    def already_seen(self, key, item):
+    def seen(self, key, item):
         """
         returns True, if the given item was already seen for
         the given key
