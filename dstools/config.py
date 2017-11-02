@@ -1,5 +1,6 @@
 import os
 import sys
+
 try:
     # python2.7
     import ConfigParser as configparser
@@ -12,13 +13,17 @@ class Config(object):
     """
     config object for a simplified handling of config files
     """
-    def __init__(self, filename, defaults=[]):
+    def __init__(self, filename, defaults=[], create_member_variables=False):
         self.filename = os.path.expanduser(filename)
         self.config = configparser.SafeConfigParser()
 
         if os.path.exists(self.filename):
             # load config from file, if it is existing
             self.load()
+
+            if create_member_variables is True:
+                # create member variables
+                self._create_member_variables()
 
         elif len(defaults) > 0:
             # otherwise, set defaults, if provided
@@ -28,6 +33,24 @@ class Config(object):
                     self.filename
                 )
             )
+
+    def _create_member_variables(self):
+        """
+        reads values of all sections from the config file
+        and add it as member variables to the Config class
+        """
+        for section in self.config.sections():
+            for k, v in self.config.items(section):
+                print(k, v)
+                if getattr(self, k, None) is None:
+                    # new key => create member variable
+                    setattr(self, k, v)
+
+                else:
+                    raise ValueError(
+                        "cannot create member variable '{}' since not "
+                        "unique".format(k)
+                    )
 
     def set(self, section, key, value):
         """
