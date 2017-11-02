@@ -135,8 +135,11 @@ def open_read(filename):
         # open as bz2
         return bz2.BZ2File(filename, "rb")
     else:
-        # open as normal file
-        return codecs.open(filename, "r", "utf-8")
+        # open as normal text file
+        if (sys.version_info > (3, 0)):
+            return open(filename, "rb")
+        else:
+            return codecs.open(filename, "r", "utf-8")
 
 
 def get_blocks(filename, func=None, chunk_size=512):
@@ -182,7 +185,7 @@ def get_linewise(
             buffered_reader = io.BufferedReader(f)
 
         for line in buffered_reader:
-            line = line.strip()
+            line = str(line).strip()
 
             if skip_empty_lines and (line == ""):
                 # skip empty lines
