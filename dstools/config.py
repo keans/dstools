@@ -41,7 +41,6 @@ class Config(object):
         """
         for section in self.config.sections():
             for k, v in self.config.items(section):
-                print(k, v)
                 if getattr(self, k, None) is None:
                     # new key => create member variable
                     setattr(self, k, v)
