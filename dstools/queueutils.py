@@ -20,7 +20,7 @@ class ThreadedWorkerQueue:
         self._no_threads = no_threads
         self._threads = []
         self._is_worker_running = False
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
 
         if auto_start_workers is True:
             # automatically start the workers
@@ -36,6 +36,10 @@ class ThreadedWorkerQueue:
         """
         start all worker threads
         """
+        if self.is_worker_running is True:
+            # already running => do nothing
+            return
+
         with self._lock:
             for _ in range(self._no_threads):
                 # start a new thread in daemon mode
