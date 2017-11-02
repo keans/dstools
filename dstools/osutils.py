@@ -185,7 +185,7 @@ def get_linewise(
             buffered_reader = io.BufferedReader(f)
 
         for line in buffered_reader:
-            line = str(line).strip()
+            line = line.decode("utf-8").strip()
 
             if skip_empty_lines and (line == ""):
                 # skip empty lines
@@ -197,8 +197,9 @@ def get_linewise(
 
             try:
                 yield func(line) if func is not None else line
-            except ValueError:
-                print("ERROR", line)
+
+            except ValueError as e:
+                print("get_linewise ERROR: {} in '{}'".format(e, line))
 
 
 def get_lines_count(filename):
