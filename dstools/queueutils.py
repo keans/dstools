@@ -55,6 +55,9 @@ class ThreadedWorkerQueue:
         """
         stop all worker threads
         """
+        if self.is_worker_running is False:
+            return
+
         for _ in range(self._no_threads):
             self._q.put(None)
         for t in self._threads:
