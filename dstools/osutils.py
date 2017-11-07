@@ -19,6 +19,7 @@ def get_path_or_create(path):
     """
     returns the path and the flag, if it has been just created
     """
+    path = os.path.abspath(os.path.expanduser(path))
     if not os.path.exists(path):
         os.makedirs(path)
         return path, True
@@ -30,6 +31,7 @@ def get_dir_or_error(path):
     """
     returns the path or exists with an error, if it is not existing
     """
+    path = os.path.expanduser(path)
     if not os.path.exists(path) or not os.path.isdir(path):
         sys.exit("The path '%s' does not exist. Abort!" % path)
 
@@ -44,7 +46,7 @@ def add_file_directory_to_path(f, rel_path=".."):
     """
 
     path = os.path.abspath(
-        os.path.join(os.path.dirname(f), rel_path)
+        os.path.join(os.path.expanduser(os.path.dirname(f)), rel_path)
     )
     if not os.path.exists(path):
         sys.exit(
