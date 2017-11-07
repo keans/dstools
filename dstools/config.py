@@ -48,8 +48,7 @@ class Config(object):
             for k, v in self.config.items(section):
                 if getattr(self, k, None) is None:
                     # new key => create member variable
-                    if
-                    setattr(self, k, v)
+                    setattr(self, k, self.get_type(section, k)(v))
 
                 else:
                     raise ValueError(
@@ -79,7 +78,7 @@ class Config(object):
 
         if type_ is None:
             # if not type proved, get type from defaults
-            type_ = self.get_type(section_key)
+            type_ = self.get_type(section, key)
 
         return type_(self.config.get(section, key))
 
