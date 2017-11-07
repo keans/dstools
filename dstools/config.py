@@ -16,6 +16,11 @@ class Config(object):
     def __init__(self, filename, defaults=[], create_member_variables=False):
         self.filename = os.path.expanduser(filename)
         self.config = configparser.SafeConfigParser()
+        self._defaults_types = {
+            "{}#{}".format(item[0], item[1]): item[3]
+            for item in defaults
+            if len(item) == 4
+        }
 
         if os.path.exists(self.filename):
             # load config from file, if it is existing
@@ -43,6 +48,7 @@ class Config(object):
             for k, v in self.config.items(section):
                 if getattr(self, k, None) is None:
                     # new key => create member variable
+                    if
                     setattr(self, k, v)
 
                 else:
@@ -60,7 +66,7 @@ class Config(object):
             self.config.add_section(section)
         self.config.set(section, key, value)
 
-    def get(self, section, key, type_=str):
+    def get(self, section, key, type_=None):
         """
         get a value from a section by given key
         (type_ can be specified for cast)
@@ -71,7 +77,18 @@ class Config(object):
         ):
             return None
 
+        if type_ is None:
+            # if not type proved, get type from defaults
+            type_ = self.get_type(section_key)
+
         return type_(self.config.get(section, key))
+
+    def get_type(self, section, key):
+        """
+        returns the type of the given config item,
+        if defined in the defaults; if not defined retur str
+        """
+        return self._defaults_types.get("{}#{}".format(section, key), str)
 
     def save(self):
         """
