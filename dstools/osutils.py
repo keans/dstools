@@ -27,7 +27,21 @@ def get_path_or_create(path):
     return path, False
 
 
-def get_dir_or_error(path):
+def create_path_or_error(path):
+    """
+    create the path if not existing, else throw error
+    """
+    path = os.path.expanduser(path)
+    if os.path.exists(path) and os.path.isdir(path):
+        sys.exit("The path '%s' does already exist. Abort!" % path)
+
+    # create the path
+    os.makedirs(path)
+
+    return path
+
+
+def get_path_or_error(path):
     """
     returns the path or exists with an error, if it is not existing
     """
