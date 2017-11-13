@@ -37,26 +37,29 @@ class PersistentDejaVu:
     extends the DejaVu class to support persistence
     by using a simple text file
     """
-    def __init__(self, filename, autoload=True):
+    def __init__(self, filename, auto_load=True):
         DejaVu.__init__(self)
 
         self._filename = filename
-        if autoload is True:
+        if auto_load is True:
             # load stored items
             self.load()
 
-    def seen(self, item):
+    def seen(self, item, auto_append=True):
         """
         returns True, if the given item was already seen;
         if seen for the first time, append it to the text file
         """
         is_existing = DejaVu.seen(self, item)
-        if is_existing is False:
-            self._append(item)
+        if (is_existing is False) and (auto_append is True):
+            self.append(item)
 
         return is_existing
 
-    def _append(self, item):
+    def append(self, item):
+        """
+        append item to persistent already seen file
+        """
         with open(self._filename, "a") as f:
             f.write("{}\n".format(item))
 
