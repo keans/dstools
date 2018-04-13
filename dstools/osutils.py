@@ -173,7 +173,7 @@ def get_blocks(filename, func=None, chunk_size=512):
 
         if chunk_size is None:
             # read complete file at once
-            data = buffered_reader.read()
+            data = buffered_reader.read().decode("utf-8")
             yield func(data) if func is not None else data
 
         else:
