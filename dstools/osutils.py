@@ -225,7 +225,9 @@ def get_lines_count(filename):
     return sum(1 for line in get_linewise(filename))
 
 
-def get_all_files(pattern="*", directory=None, sort=True):
+def get_all_files(
+    pattern="*", directory=None, sort=True, stop_on_empty=True
+):
     """
     returns a list of all files in the given directory
     that matches the given pattern
@@ -237,5 +239,10 @@ def get_all_files(pattern="*", directory=None, sort=True):
 
     if sort:
         files.sort()
+
+    if (stop_on_empty is True) and (len(files) == 0):
+        sys.exit(
+            "No files found for pattern '{}'! Abort.".format(pattern)
+        )
 
     return files
