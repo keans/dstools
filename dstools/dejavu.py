@@ -90,11 +90,12 @@ class PersistentDejaVu(DejaVu):
         load all existing items from file
         """
         if os.path.exists(self._filename):
-            with open(self._filename, "r") as f:
-                self._unique_items = set([
-                    line.strip()
-                    for line in f.read().splitlines()
-                ])
+            with self._lock:
+                with open(self._filename, "r") as f:
+                    self._unique_items = set([
+                        line.strip()
+                        for line in f.read().splitlines()
+                    ])
 
 
 class DejaVuMultiple:
