@@ -103,6 +103,9 @@ def get_filename_or_error(filename, paths=[]):
     if filename is None:
         sys.exit("No filename provided! Abort.")
 
+    if not isinstance(paths, list):
+        paths = [paths]
+
     if "./" not in paths:
         # always add current directory as path
         paths.insert(0, "./")

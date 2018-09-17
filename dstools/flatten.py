@@ -1,20 +1,20 @@
-def flatten_dict(y, key_filter=None):
+def flatten_dict(y, key_filter=None, seperator="."):
     """
     flatten given dictionary, if filter is provided only given values are
     returned
     """
     res = {}
 
-    def flatten(x, name=''):
+    def flatten(x, name="", seperator=""):
         if isinstance(x, dict):
             # --- dict ---
             for k in x.keys():
-                flatten(x[k], "{}{}_".format(name, k))
+                flatten(x[k], "{}{}{}".format(name, k, seperator), seperator)
 
         elif isinstance(x, list):
             # --- list ---
             for no, k in enumerate(x):
-                flatten(k, "{}{}_".format(name, no))
+                flatten(k, "{}{}{}".format(name, no, seperator), seperator)
 
         else:
             # --- value ---
@@ -22,6 +22,6 @@ def flatten_dict(y, key_filter=None):
             if (key_filter is None) or (key in key_filter):
                 res[key] = x
 
-    flatten(y)
+    flatten(y, seperator=".")
 
     return res
