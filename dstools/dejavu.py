@@ -1,5 +1,6 @@
 import os
 import collections
+import threading
 
 
 class DejaVu:
@@ -7,9 +8,10 @@ class DejaVu:
     class to keep track of already seen items
     """
     def __init__(self):
+        self._lock = threading.RLock()
         self._unique_items = set()
 
-    def seen(self, item):
+    def seen(self, item, auto_append=True):
         """
         returns True, if the given item was already seen
         """
@@ -17,22 +19,31 @@ class DejaVu:
             # existing item
             return True
 
-        # add new item to set
-        self._unique_items.add(item)
+        if auto_append is True:
+            # add new item to set
+            self.append(item)
 
         return False
+
+    def append(self, item):
+        """
+        append an item to unique items list
+        """
+        with self._lock:
+            self._unique_items.add(item)
 
     def reset(self):
         """
         reset all seen items
         """
-        self._unique_items = set()
+        with self._lock:
+            self._unique_items.clear()
 
     def __str__(self):
         return "{}".format(self._unique_items)
 
 
-class PersistentDejaVu:
+class PersistentDejaVu(DejaVu):
     """
     extends the DejaVu class to support persistence
     by using a simple text file
@@ -60,16 +71,19 @@ class PersistentDejaVu:
         """
         append item to persistent already seen file
         """
-        with open(self._filename, "a") as f:
-            f.write("{}\n".format(item))
+        DejaVu.append(self, item)
+        with self._lock:
+            with open(self._filename, "a") as f:
+                f.write("{}\n".format(item))
 
     def reset(self):
         """
         reset all seen items and remove stored items
         """
         DejaVu.reset(self)
-        if os.path.exists(self._filename):
-            os.remove(self._filename)
+        with self._lock:
+            if os.path.exists(self._filename):
+                os.remove(self._filename)
 
     def load(self):
         """
@@ -89,9 +103,10 @@ class DejaVuMultiple:
     multiple keys
     """
     def __init__(self):
+        self._lock = threading.RLock()
         self._unique_items = collections.defaultdict(set)
 
-    def seen(self, key, item):
+    def seen(self, key, item, auto_append=True):
         """
         returns True, if the given item was already seen for
         the given key
@@ -100,16 +115,25 @@ class DejaVuMultiple:
             # existing item
             return True
 
-        # add new item to set
-        self._unique_items[key].add(item)
+        if auto_append is True:
+            self.append(key, item)
 
         return False
+
+    def append(self, key, item):
+        """
+        append item to persistent already seen file
+        """
+        with self._lock:
+            # add new item to set
+            self._unique_items[key].add(item)
 
     def reset(self):
         """
         reset all seen items
         """
-        self._unique_items = collections.defaultdict(set)
+        with self._lock:
+            self._unique_items.clear()
 
     def __str__(self):
         tmp = ""
