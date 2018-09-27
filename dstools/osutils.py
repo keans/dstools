@@ -94,13 +94,29 @@ def disk_free(path, relative=True):
 
 
 # ---------- file -----------
+def error_on_exists(filename):
+    """
+    raises error when file exists,
+    returns given filename otherwise
+    """
+    if filename in (None, ""):
+        sys.exit("No filename provided! Abort.")
+
+    if os.path.exists(filename) and os.path.isfile(filename):
+        sys.exit(
+            "The filename '{}' does already exist! Abort.".format(filename)
+        )
+
+    return filename
+
+
 def get_filename_or_error(filename, paths=[]):
     """
     tries to find the given filename in one of the paths in given order.
     If it exists the filename including the path will be returned,
     otherwise an error is raised
     """
-    if filename is None:
+    if filename in (None, ""):
         sys.exit("No filename provided! Abort.")
 
     if not isinstance(paths, list):
