@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 # logger
-log = logging.getLogger(__file__)
+log = logging.getLogger(__name__)
 
 
 class FigureContext:
@@ -19,7 +19,7 @@ class FigureContext:
     """
     def __init__(
         self, targetdir, title, xlabel="x", ylabel="y", rotate_xticks=True,
-        figsize=(15, 10), dpi=300, tight_layout=True
+        figsize=(15, 10), dpi=300, tight_layout=True, ext="pdf"
     ):
         self._targetdir = targetdir
         self._title = title
@@ -29,6 +29,7 @@ class FigureContext:
         self._ylabel = ylabel
         self._rotate_xticks = rotate_xticks
         self._tight_layout = tight_layout
+        self._ext = ext
 
     def __enter__(self):
         fig, ax = plt.subplots(figsize=self._figsize)
@@ -49,9 +50,8 @@ class FigureContext:
             plt.tight_layout()
 
         output_filename = os.path.join(
-            self._targetdir, "{}.pdf".format(self._title)
+            self._targetdir, "{}.{}".format(self._title, self._ext)
         )
         log.debug("writing graph to '{}'...".format(output_filename))
         plt.savefig(output_filename, bbox_inches="tight", dpi=self._dpi)
         plt.close()
-
