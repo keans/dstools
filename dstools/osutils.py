@@ -265,3 +265,21 @@ def get_all_files(
         )
 
     return files
+
+
+def write_dict_to_file(d, filename, header=None):
+    """
+    write dictionary to file e.g. for storing used parameters
+    """
+    assert(isinstance(d, dict))
+
+    with open(filename, "w") as f:
+        if header is not None:
+            # write header comment
+            f.write("# {}\n".format(header))
+
+        # write key, value pairs per line to text file
+        f.writelines([
+            "{} = {}\n".format(k, v)
+            for k, v in d.items()
+        ])
