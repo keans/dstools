@@ -18,10 +18,12 @@ class FigureContext:
     and storing the final result in a file
     """
     def __init__(
-        self, targetdir, title, xlabel="x", ylabel="y", rotate_xticks=True,
+        self, targetdir, filename="out", title=None,
+        xlabel="x", ylabel="y", rotate_xticks=True,
         figsize=(15, 10), dpi=300, tight_layout=True, ext="pdf"
     ):
         self._targetdir = targetdir
+        self._filename = filename
         self._title = title
         self._figsize = figsize
         self._dpi = dpi
@@ -37,6 +39,9 @@ class FigureContext:
         plt.xlabel(self._xlabel)
         plt.ylabel(self._ylabel)
 
+        if self._title:
+            plt.title(self._title)
+
         if self._rotate_xticks is True:
             plt.xticks(rotation=90)
 
@@ -50,8 +55,9 @@ class FigureContext:
             plt.tight_layout()
 
         output_filename = os.path.join(
-            self._targetdir, "{}.{}".format(self._title, self._ext)
+            self._targetdir, "{}.{}".format(self._filename, self._ext)
         )
         log.debug("writing graph to '{}'...".format(output_filename))
         plt.savefig(output_filename, bbox_inches="tight", dpi=self._dpi)
         plt.close()
+
