@@ -119,13 +119,17 @@ def get_filename_or_error(filename, paths=[]):
     if filename in (None, ""):
         sys.exit("No filename provided! Abort.")
 
+    # check direct match without path
+    if os.path.exists(filename) and os.path.isfile(filename):
+        return os.path.abspath(filename)
+
     if not isinstance(paths, list):
         paths = [paths]
 
     if "./" not in paths:
         # always add current directory as path
         paths.insert(0, "./")
-
+    
     # check provided paths for matching file
     for path in paths:
         p = os.path.abspath(os.path.join(path, filename))
