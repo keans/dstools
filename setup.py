@@ -42,7 +42,7 @@ setup(
         exclude=['contrib', 'docs', 'tests']
     ),
     install_requires=[
-        "pushnotify", "requests", "ujson", "numpy",
+        "requests", "ujson", "numpy",
         "scipy", "future"
     ],
 )
