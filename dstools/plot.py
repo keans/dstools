@@ -45,9 +45,6 @@ class FigureContext:
         if self._rotate_xticks is True:
             plt.xticks(rotation=90)
 
-        matplotlib.rc("xtick", labelsize=8)
-        matplotlib.rc("ytick", labelsize=8)
-
         return ax
 
     def __exit__(self, exc_type, exc_value, exc_tb):

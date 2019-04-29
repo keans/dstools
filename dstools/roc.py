@@ -42,6 +42,12 @@ class RocCurve:
             "tpr": self._tpr,
         }
 
+    def set_name(self, name):
+        """
+        set new name
+        """
+        self._name = name
+
     def auc(self, max_fpr=1.0):
         """
         compute (bounded-)AUC for ROC curve
@@ -72,19 +78,8 @@ class RocCurve:
         return fpr, tpr, auc_
 
     def plot(self, ax, max_fpr=1.0, title=None, random_line=True):
-        # prepare label
-        label = "{} ({}AUC={:0.3f})".format(
-                self._name,
-                (
-                    "{}-bounded, ".format(max_fpr)
-                    if max_fpr not in (None, 1.0)
-                    else ""
-                ),
-                self.auc(max_fpr)[2]
-        )
-
         # plot ROC curve
-        ax.plot(self._fpr, self._tpr, label=label)
+        ax.plot(self._fpr, self._tpr, label=self._name)
 
         # plot random predictions line
         if random_line is True:
@@ -97,7 +92,7 @@ class RocCurve:
         if title is not None:
             plt.title(title)
 
-        plt.legend(loc="best")
+        plt.legend(loc="lower right")
 
     def save(self, filename):
         """
@@ -135,7 +130,7 @@ def plot_rocs(
     with FigureContext(
         targetdir=targetdir, filename=filename, title=title,
         xlabel="False Positive Rate", ylabel="True Positive Rate",
-        rotate_xticks=False, ext=ext
+        rotate_xticks=False, ext=ext, figsize=figsize
     ) as ax:
         for roc in rocs:
             roc.plot(ax, max_fpr, title, random_line)
