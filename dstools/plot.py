@@ -60,4 +60,3 @@ class FigureContext:
         log.debug("writing graph to '{}'...".format(output_filename))
         plt.savefig(output_filename, bbox_inches="tight", dpi=self._dpi)
         plt.close()
-
