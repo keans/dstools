@@ -1,12 +1,5 @@
 import threading
-
-
-try:
-    # python2.7
-    from Queue import Queue
-except:
-    # python3
-    from queue import Queue
+from queue import Queue
 
 
 class ThreadedWorkerQueue:

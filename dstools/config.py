@@ -1,12 +1,6 @@
 import os
 import sys
-
-try:
-    # python2.7
-    import ConfigParser as configparser
-except:
-    # python3
-    import configparser
+import configparser
 
 
 class Config(object):

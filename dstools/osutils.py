@@ -8,11 +8,6 @@ import collections
 import bz2
 import shutil
 
-try:
-    import ujson as json
-except:
-    import json
-
 
 # ----------- path ----------
 def get_path_or_create(path):
@@ -129,7 +124,7 @@ def get_filename_or_error(filename, paths=[]):
     if "./" not in paths:
         # always add current directory as path
         paths.insert(0, "./")
-    
+
     # check provided paths for matching file
     for path in paths:
         p = os.path.abspath(os.path.join(path, filename))
